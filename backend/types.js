@@ -9,3 +9,12 @@ export const signUpSchema = signinSchema.extend({
   firstName: z.string(),
   lastName: z.string(),
 });
+
+export const updateUserSchema = z.object({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  password: z
+    .string({ error: "Password Should be min 8 letters" })
+    .min(8)
+    .optional(),
+});
