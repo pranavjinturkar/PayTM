@@ -1,5 +1,5 @@
 import express from "express";
-import { Accounts } from "../db.js";
+import { Accounts, User } from "../db.js";
 import { authMiddleware } from "../middleware.js";
 import { sendTransactionSchema } from "../types.js";
 import mongoose from "mongoose";
@@ -10,11 +10,13 @@ router.get("/balance", authMiddleware, async (req, res) => {
   const userId = req.userId;
   try {
     const result = await Accounts.findOne({ userId: userId }, { balance: 1 });
+    const userRes = await User.findById(userId, { firstName: 1, lastName: 1 });
 
     res.status(200).json({
       message: "Account Balance Fetched Successfully",
       success: true,
       balance: parseFloat((result.balance / 100).toFixed(2)),
+      userData: userRes,
     });
   } catch (error) {
     console.log(error);

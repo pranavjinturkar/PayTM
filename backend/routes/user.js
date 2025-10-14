@@ -163,7 +163,7 @@ router.put("/", authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/bulk", async (req, res) => {
+router.get("/bulk", authMiddleware, async (req, res) => {
   const { filter } = req.query;
 
   try {
@@ -184,10 +184,12 @@ router.get("/bulk", async (req, res) => {
           )
         : await User.find({}, { firstName: 1, lastName: 1, _id: 1 });
 
+    const filteredData = usersData.filter((user) => user._id != req.userId);
+
     res.status(200).json({
       message: "User Fetched Successfully",
       success: true,
-      users: usersData,
+      users: filteredData,
     });
   } catch (error) {
     console.log(error);
@@ -198,5 +200,7 @@ router.get("/bulk", async (req, res) => {
     });
   }
 });
+
+// router.get("/", authMiddleware, )
 
 export default router;
