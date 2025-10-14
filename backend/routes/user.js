@@ -1,6 +1,6 @@
 import express from "express";
 import { signUpSchema, signinSchema, updateUserSchema } from "../types.js";
-import { User } from "../db.js";
+import { User, Accounts } from "../db.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
@@ -47,6 +47,11 @@ router.post("/signup", async (req, res) => {
 
     const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: "168h",
+    });
+
+    await Accounts.insertOne({
+      userId: newUser._id,
+      balance: (1 + Math.random() * 10000).toFixed(2) * 100,
     });
 
     res.status(201).json({
