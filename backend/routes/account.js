@@ -45,16 +45,19 @@ router.post("/transfer", authMiddleware, async (req, res) => {
 
   try {
     const checkToUser = await Accounts.findOne({ userId: to }).session(session);
-    if (!checkToUser)
+    if (!checkToUser) {
+      await session.abortTransaction();
       return res.status(400).json({
         message: "Invalid Account",
         success: false,
       });
+    }
 
     const checkBalance = await Accounts.findOne({ userId: from }).session(
       session
     );
     if (!checkBalance || checkBalance.balance < finalCurrency) {
+      await session.abortTransaction();
       return res.status(400).json({
         message: "Insufficient balance",
         success: false,
@@ -78,6 +81,7 @@ router.post("/transfer", authMiddleware, async (req, res) => {
       success: true,
     });
   } catch (error) {
+    await session.abortTransaction();
     console.log(error);
     res.status(500).json({
       message: "Internal Server Error",

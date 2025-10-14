@@ -21,5 +21,5 @@ export const updateUserSchema = z.object({
 
 export const sendTransactionSchema = z.object({
   to: z.string(),
-  amount: z.float64().min(0),
+  amount: z.float64().refine((n) => n >= 1),
 });
