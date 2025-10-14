@@ -16,9 +16,11 @@ const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   async function handleSubmit() {
+    setLoading(true);
     axios
       .post(`${BASE_URL}/user/signup`, {
         firstName,
@@ -27,24 +29,19 @@ const Signup = () => {
         password,
       })
       .then((res) => {
-        if (res.status(411)) {
-          setError(res.data.message);
-          // console.log(error)
-        }
+        localStorage.setItem("token", res.data.token);
+        navigate("/dashboard");
       })
       .catch((err) => {
         if (err.status == "411") {
-          console.log(err.response.data.message);
+          setError(err.response.data.message);
         }
       });
-    // console.log(response);
-    // console.log({
-    //   firstName,
-    //   lastName,
-    //   username,
-    //   password,
-    // });
-    // navigate("/dashboard");
+    setFirstName("");
+    setUsername("");
+    setLastName("");
+    setPassword("");
+    setLoading(false);
   }
 
   return (
@@ -75,16 +72,14 @@ const Signup = () => {
         placeholder={"123456"}
         type={"password"}
       />
-      <Button label={"Sign Up"} onclickFn={handleSubmit} />
+      <Button label={"Sign Up"} onclickFn={handleSubmit} loading={loading} />
       <BottomWarning
         label={"Already have an account?"}
         buttonText={"Log In"}
         to={"/signin"}
       />
       {error.length > 0 && (
-        <div className="text-2xl text-center font-inter rose-gradient">
-          {error}
-        </div>
+        <div className="text-lg text-center text-red-500">Error: {error}</div>
       )}
     </AuthWrapper>
   );
