@@ -1,1 +1,20 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+
 @import "tailwindcss";
+
+@theme {
+  --font-inter: "Inter", sans-serif;
+  --font-nunito: "Nunito", sans-serif;
+}
+
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+.rose-gradient {
+  @apply bg-gradient-to-r from-rose-800 via-rose-500 to-rose-800 hover:bg-gradient-to-r hover:from-rose-500 hover:via-rose-800 hover:to-rose-500 transition-colors duration-300;
+}

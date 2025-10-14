@@ -1,6 +1,6 @@
 import React from "react";
 
-const InputBox = ({ labelName, placeholder, type }) => {
+const InputBox = ({ labelName, placeholder, type, onChange }) => {
   return (
     <div className="w-full flex flex-col gap-1">
       <label
@@ -13,7 +13,8 @@ const InputBox = ({ labelName, placeholder, type }) => {
         type={type}
         placeholder={placeholder}
         id={labelName}
-        className="w-full px-4 py-2 rounded-md border-2 border-gray-200 focus:outline-none font-nunito"
+        onChange={onChange}
+        className="w-full px-4 py-2 rounded-md border-2 font-medium border-gray-200 focus:outline-none font-nunito"
       />
     </div>
   );
