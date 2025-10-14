@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { api } from "../service";
+import { useDebounce } from "../useDebounce";
 
 const Dashboard = () => {
   const [data, setData] = useState(null);
@@ -66,10 +67,23 @@ function BalanceComponent({ balance }) {
 function UserComponent() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [filter, setFilter] = useState("");
+  const debouncedVal = useDebounce(filter, 300);
+
+  const controller = new AbortController();
 
   useEffect(() => {
-    api.get("/user/bulk").then((res) => setUsers(res.data.users));
-  }, []);
+    const response = api
+      .get("/user/bulk?filter=" + debouncedVal, {
+        signal: controller.signal,
+      })
+      .then((res) => {
+        setUsers(res.data.users);
+      });
+
+
+    return () => controller?.abort();
+  }, [debouncedVal]);
 
   function handleSendMoney(id, firstName) {
     navigate(`/send?id=${id}&firstname=${firstName}`);
@@ -81,6 +95,7 @@ function UserComponent() {
         type="text"
         className="w-full px-4 py-2 rounded-md border-2 border-white focus:outline-none placeholder:text-gray-200 font-nunito text-white font-medium"
         placeholder="Search users..."
+        onChange={(e) => setFilter(e.target.value)}
       />
       <div className="flex flex-col gap-6 mt-4">
         {users.length > 0 ? (
@@ -101,9 +116,7 @@ function UserComponent() {
               </div>
               <button
                 className="bg-rose-200 text-black px-4 py-2 rounded-md shadow-md text-sm font-medium font-inter cursor-pointer hover:bg-rose-300 transition-colors duration-200"
-                onClick={() =>
-                  handleSendMoney(item._id, item.firstName)
-                }
+                onClick={() => handleSendMoney(item._id, item.firstName)}
               >
                 Send Money
               </button>
