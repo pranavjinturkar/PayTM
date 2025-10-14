@@ -18,3 +18,8 @@ export const updateUserSchema = z.object({
     .min(8)
     .optional(),
 });
+
+export const sendTransactionSchema = z.object({
+  to: z.string(),
+  amount: z.float64().min(0),
+});
