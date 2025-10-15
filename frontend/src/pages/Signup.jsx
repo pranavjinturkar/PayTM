@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AuthWrapper from "../components/AuthWrapper";
 import Header from "../components/Header";
 import SubHeader from "../components/SubHeader";
@@ -7,6 +7,7 @@ import Button from "../components/Button";
 import BottomWarning from "../components/BottomWarning";
 import axios from "axios";
 import { data, useNavigate } from "react-router-dom";
+import { api } from "../service";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -18,6 +19,16 @@ const Signup = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+    useEffect(() => {
+      api
+        .get("/user/me")
+        .then((res) => {
+          if (res.data.success) {
+            navigate("/dashboard");
+          }
+        })
+    }, []);
 
   async function handleSubmit() {
     setLoading(true);

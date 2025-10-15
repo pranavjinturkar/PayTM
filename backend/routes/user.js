@@ -10,6 +10,19 @@ dotenv.config({ quiet: true });
 
 const router = express.Router();
 
+router.get("/me", authMiddleware, async (req, res) => {
+  const userRes = await User.findById(req.userId);
+  if (!userRes)
+    return res.status(400).json({
+      message: "Invalid User",
+      success: false,
+    });
+  res.status(200).json({
+    message: "Has Valid JWT",
+    success: true,
+  });
+});
+
 router.post("/signup", async (req, res) => {
   const { username, firstName, lastName, password } = req.body;
   const parsedPayload = signUpSchema.safeParse({
